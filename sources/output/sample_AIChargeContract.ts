@@ -321,72 +321,77 @@ function dictValueParserFactoryDeploy(): DictionaryValue<FactoryDeploy> {
     }
 }
 
-export type Add = {
-    $$type: 'Add';
+export type UserDeposit = {
+    $$type: 'UserDeposit';
+    userAddress: Address;
     amount: bigint;
 }
 
-export function storeAdd(src: Add) {
+export function storeUserDeposit(src: UserDeposit) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2278832834, 32);
-        b_0.storeUint(src.amount, 32);
+        b_0.storeUint(3303941106, 32);
+        b_0.storeAddress(src.userAddress);
+        b_0.storeUint(src.amount, 64);
     };
 }
 
-export function loadAdd(slice: Slice) {
+export function loadUserDeposit(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2278832834) { throw Error('Invalid prefix'); }
-    let _amount = sc_0.loadUintBig(32);
-    return { $$type: 'Add' as const, amount: _amount };
+    if (sc_0.loadUint(32) !== 3303941106) { throw Error('Invalid prefix'); }
+    let _userAddress = sc_0.loadAddress();
+    let _amount = sc_0.loadUintBig(64);
+    return { $$type: 'UserDeposit' as const, userAddress: _userAddress, amount: _amount };
 }
 
-function loadTupleAdd(source: TupleReader) {
+function loadTupleUserDeposit(source: TupleReader) {
+    let _userAddress = source.readAddress();
     let _amount = source.readBigNumber();
-    return { $$type: 'Add' as const, amount: _amount };
+    return { $$type: 'UserDeposit' as const, userAddress: _userAddress, amount: _amount };
 }
 
-function storeTupleAdd(source: Add) {
+function storeTupleUserDeposit(source: UserDeposit) {
     let builder = new TupleBuilder();
+    builder.writeAddress(source.userAddress);
     builder.writeNumber(source.amount);
     return builder.build();
 }
 
-function dictValueParserAdd(): DictionaryValue<Add> {
+function dictValueParserUserDeposit(): DictionaryValue<UserDeposit> {
     return {
         serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storeAdd(src)).endCell());
+            buidler.storeRef(beginCell().store(storeUserDeposit(src)).endCell());
         },
         parse: (src) => {
-            return loadAdd(src.loadRef().beginParse());
+            return loadUserDeposit(src.loadRef().beginParse());
         }
     }
 }
 
- type SampleTactContract_init_args = {
-    $$type: 'SampleTactContract_init_args';
+ type AIChargeContract_init_args = {
+    $$type: 'AIChargeContract_init_args';
     owner: Address;
 }
 
-function initSampleTactContract_init_args(src: SampleTactContract_init_args) {
+function initAIChargeContract_init_args(src: AIChargeContract_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeAddress(src.owner);
     };
 }
 
-async function SampleTactContract_init(owner: Address) {
-    const __code = Cell.fromBase64('te6ccgECFAEAA0UAART/APSkE/S88sgLAQIBYgIDAtTQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxa2zzy4ILI+EMBzH8BygBZWSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFssfye1UDwQCAVgLDAPg7aLt+wGSMH/gcCHXScIflTAg1wsf3iCCEIfUOsK6jpUw0x8BghCH1DrCuvLggdMfATHbPH/gIIIQlGqYtrqOqDDTHwGCEJRqmLa68uCB0z8BMcgBghCv+Q9XWMsfyz/J+EIBcG3bPH/gwACRMOMNcAYIBQNs+QGC8MT41yMS7f3vW3vseDO9uxYtFRG9eKkSrtDyY3r2VXKuuo+Ocds8iPhCAX9t2zx/2zHgBgcIACT4QW8kECNfAyOBEU0CxwXy9KAAHgAAAABpbmNyZW1lbnRlZAE6bW0ibrOZWyBu8tCAbyIBkTLiECRwAwSAQlAj2zwJAcrIcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WUAP6AnABymgjbrORf5MkbrPilzMzAXABygDjDSFus5x/AcoAASBu8tCAAcyVMXABygDiyQH7AAoAmH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMwCASANDgIBSBITAhG3Qxtnm2eNhDAPEACVt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwThOy6ctWadluZ0HSzbKM3RSQAcDtRNDUAfhj0gABjiX6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAdMfWWwS4Pgo1wsKgwm68uCJ+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHR2zwRAAIgAAJwABGwr7tRNDSAAGAAdbJu40NWlwZnM6Ly9RbVl6UUhOMm42RDF6RUJ1SnlCbkpybm1oUVd6Z1pXaGFOcHBtd3NBRlc0a05pgg');
-    const __system = Cell.fromBase64('te6cckECFgEAA08AAQHAAQEFoebTAgEU/wD0pBP0vPLICwMCAWIMBAIBWAgFAgFIBwYAdbJu40NWlwZnM6Ly9RbVl6UUhOMm42RDF6RUJ1SnlCbkpybm1oUVd6Z1pXaGFOcHBtd3NBRlc0a05pggABGwr7tRNDSAAGACASAKCQCVt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwThOy6ctWadluZ0HSzbKM3RSQAhG3Qxtnm2eNhDAUCwACIALU0AHQ0wMBcbCjAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IhUUFMDbwT4YQL4Yts8Wts88uCCyPhDAcx/AcoAWVkg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxbLH8ntVBQNA+Dtou37AZIwf+BwIddJwh+VMCDXCx/eIIIQh9Q6wrqOlTDTHwGCEIfUOsK68uCB0x8BMds8f+AgghCUapi2uo6oMNMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8n4QgFwbds8f+DAAJEw4w1wExAOA2z5AYLwxPjXIxLt/e9be+x4M727Fi0VEb14qRKu0PJjevZVcq66j45x2zyI+EIBf23bPH/bMeATDxAAHgAAAABpbmNyZW1lbnRlZAE6bW0ibrOZWyBu8tCAbyIBkTLiECRwAwSAQlAj2zwRAcrIcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WUAP6AnABymgjbrORf5MkbrPilzMzAXABygDjDSFus5x/AcoAASBu8tCAAcyVMXABygDiyQH7ABIAmH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMwAJPhBbyQQI18DI4ERTQLHBfL0oAHA7UTQ1AH4Y9IAAY4l+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHTH1lsEuD4KNcLCoMJuvLgifpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB0ds8FQACcCk0+ys=');
+async function AIChargeContract_init(owner: Address) {
+    const __code = Cell.fromBase64('te6ccgECFwEABJcAART/APSkE/S88sgLAQIBYgIDAtbQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxa2zzy4ILI+EMBzH8BygBZAvQAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFsntVBQEAgFYDg8D0O2i7fsBkjB/4HAh10nCH5UwINcLH94gghDE7iPyuo62MNMfAYIQxO4j8rry4IH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAdM/WWwS2zx/4CCCEJRqmLa64wLAAJEw4w1wBQYHAfaCAONuIcIA8vQjgQELI4EBAUEz9ApvoZQB1wAwkltt4m6zjjkjgQELI4EBAUEz9ApvoZQB1wAwkltt4iBu8tCAgQELAqAQNBKBAQEhbpVbWfRZMJjIAc8AQTP0QeKOGxAjgQELWYEBASFulVtZ9FkwmMgBzwBBM/RB4uIIAVAw0x8BghCUapi2uvLggdM/ATHIAYIQr/kPV1jLH8s/yfhCAXBt2zx/CwN6+QGC8IugxsgIWr6U06jhW4esaWZ7p0Hh+r7VoBtqwwB67cBvuo+V+EFvJBAjXwPbPIj4QgF/bds8f9sx4AkKCwACAQDYIoEBCyKBAQFBM/QKb6GUAdcAMJJbbeKCANVXAW6z8vQigQELIoEBAUEz9ApvoZQB1wAwkltt4iBu8tCAggDVVyGCCJiWgL7y9IEBCwGCCJiWgKEQNBKBAQEhbpVbWfRZMJjIAc8AQTP0QeIBABIAAAAAdXNlQUkBOm1tIm6zmVsgbvLQgG8iAZEy4hAkcAMEgEJQI9s8DAHKyHEBygFQBwHKAHABygJQBSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlAD+gJwAcpoI26zkX+TJG6z4pczMwFwAcoA4w0hbrOcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wANAJh/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMAJW7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnCdl05as07LczoOlm2UZuikgCAUgQEQIBSBITAHWybuNDVpcGZzOi8vUW1YZmczSnpvTVlnQ0FqZnRtZllkVlRpODFWTmk3eEQ2QndYTG5ob1pwTkNtbYIAAQqr7tRNDSAAECSqq5INdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiNs8WNs8bCEUFQG+7UTQ1AH4Y9IAAY4k9AT6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIEmwS4Pgo1wsKgwm68uCJ+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHR2zwWAHAigQELIoEBAUEz9ApvoZQB1wAwkltt4m6SMHDggQELIwKBAQFBM/QKb6GUAdcAMJJbbeIgbvLQgAAEbQE=');
+    const __system = Cell.fromBase64('te6cckECGQEABKEAAQHAAQEFoANnAgEU/wD0pBP0vPLICwMCAWIMBAIBWAsFAgFIBwYAdbJu40NWlwZnM6Ly9RbVhmZzNKem9NWWdDQWpmdG1mWWRWVGk4MVZOaTd4RDZCd1hMbmhvWnBOQ21tggAgFICggCSqq5INdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiNs8WNs8bCEXCQBwIoEBCyKBAQFBM/QKb6GUAdcAMJJbbeJukjBw4IEBCyMCgQEBQTP0Cm+hlAHXADCSW23iIG7y0IAAEKq+7UTQ0gABAJW7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnCdl05as07LczoOlm2UZuikgC1tAB0NMDAXGwowH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIVFBTA28E+GEC+GLbPFrbPPLggsj4QwHMfwHKAFkC9AABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8Wye1UFw0D0O2i7fsBkjB/4HAh10nCH5UwINcLH94gghDE7iPyuo62MNMfAYIQxO4j8rry4IH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAdM/WWwS2zx/4CCCEJRqmLa64wLAAJEw4w1wFREOA3r5AYLwi6DGyAhavpTTqOFbh6xpZnunQeH6vtWgG2rDAHrtwG+6j5X4QW8kECNfA9s8iPhCAX9t2zx/2zHgEA8SABIAAAAAdXNlQUkA2CKBAQsigQEBQTP0Cm+hlAHXADCSW23iggDVVwFus/L0IoEBCyKBAQFBM/QKb6GUAdcAMJJbbeIgbvLQgIIA1VchggiYloC+8vSBAQsBggiYloChEDQSgQEBIW6VW1n0WTCYyAHPAEEz9EHiAQFQMNMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8n4QgFwbds8fxIBOm1tIm6zmVsgbvLQgG8iAZEy4hAkcAMEgEJQI9s8EwHKyHEBygFQBwHKAHABygJQBSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlAD+gJwAcpoI26zkX+TJG6z4pczMwFwAcoA4w0hbrOcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAUAJh/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMAfaCAONuIcIA8vQjgQELI4EBAUEz9ApvoZQB1wAwkltt4m6zjjkjgQELI4EBAUEz9ApvoZQB1wAwkltt4iBu8tCAgQELAqAQNBKBAQEhbpVbWfRZMJjIAc8AQTP0QeKOGxAjgQELWYEBASFulVtZ9FkwmMgBzwBBM/RB4uIWAAIBAb7tRNDUAfhj0gABjiT0BPpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgSbBLg+CjXCwqDCbry4In6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAdHbPBgABG0BiBF6tw==');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
-    initSampleTactContract_init_args({ $$type: 'SampleTactContract_init_args', owner })(builder);
+    initAIChargeContract_init_args({ $$type: 'AIChargeContract_init_args', owner })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };
 }
 
-const SampleTactContract_errors: { [key: number]: { message: string } } = {
+const AIChargeContract_errors: { [key: number]: { message: string } } = {
     2: { message: `Stack undeflow` },
     3: { message: `Stack overflow` },
     4: { message: `Integer overflow` },
@@ -411,52 +416,53 @@ const SampleTactContract_errors: { [key: number]: { message: string } } = {
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
     137: { message: `Masterchain support is not enabled for this contract` },
-    4429: { message: `Invalid sender` },
+    54615: { message: `Insufficient balance` },
+    58222: { message: `Deposit amount must be greater than zero` },
 }
 
-const SampleTactContract_types: ABIType[] = [
+const AIChargeContract_types: ABIType[] = [
     {"name":"StateInit","header":null,"fields":[{"name":"code","type":{"kind":"simple","type":"cell","optional":false}},{"name":"data","type":{"kind":"simple","type":"cell","optional":false}}]},
     {"name":"Context","header":null,"fields":[{"name":"bounced","type":{"kind":"simple","type":"bool","optional":false}},{"name":"sender","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"raw","type":{"kind":"simple","type":"slice","optional":false}}]},
     {"name":"SendParameters","header":null,"fields":[{"name":"bounce","type":{"kind":"simple","type":"bool","optional":false}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}},{"name":"value","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"mode","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"body","type":{"kind":"simple","type":"cell","optional":true}},{"name":"code","type":{"kind":"simple","type":"cell","optional":true}},{"name":"data","type":{"kind":"simple","type":"cell","optional":true}}]},
     {"name":"Deploy","header":2490013878,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"DeployOk","header":2952335191,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
     {"name":"FactoryDeploy","header":1829761339,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"cashback","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"Add","header":2278832834,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":32}}]},
+    {"name":"UserDeposit","header":3303941106,"fields":[{"name":"userAddress","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":64}}]},
 ]
 
-const SampleTactContract_getters: ABIGetter[] = [
-    {"name":"counter","arguments":[],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
+const AIChargeContract_getters: ABIGetter[] = [
+    {"name":"getUserBalance","arguments":[{"name":"userAddress","type":{"kind":"simple","type":"address","optional":false}}],"returnType":{"kind":"simple","type":"int","optional":false,"format":257}},
 ]
 
-const SampleTactContract_receivers: ABIReceiver[] = [
-    {"receiver":"internal","message":{"kind":"typed","type":"Add"}},
-    {"receiver":"internal","message":{"kind":"text","text":"increment"}},
+const AIChargeContract_receivers: ABIReceiver[] = [
+    {"receiver":"internal","message":{"kind":"typed","type":"UserDeposit"}},
+    {"receiver":"internal","message":{"kind":"text","text":"useAI"}},
     {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
 ]
 
-export class SampleTactContract implements Contract {
+export class AIChargeContract implements Contract {
     
     static async init(owner: Address) {
-        return await SampleTactContract_init(owner);
+        return await AIChargeContract_init(owner);
     }
     
     static async fromInit(owner: Address) {
-        const init = await SampleTactContract_init(owner);
+        const init = await AIChargeContract_init(owner);
         const address = contractAddress(0, init);
-        return new SampleTactContract(address, init);
+        return new AIChargeContract(address, init);
     }
     
     static fromAddress(address: Address) {
-        return new SampleTactContract(address);
+        return new AIChargeContract(address);
     }
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        types:  SampleTactContract_types,
-        getters: SampleTactContract_getters,
-        receivers: SampleTactContract_receivers,
-        errors: SampleTactContract_errors,
+        types:  AIChargeContract_types,
+        getters: AIChargeContract_getters,
+        receivers: AIChargeContract_receivers,
+        errors: AIChargeContract_errors,
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
@@ -464,13 +470,13 @@ export class SampleTactContract implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Add | 'increment' | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: UserDeposit | 'useAI' | Deploy) {
         
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Add') {
-            body = beginCell().store(storeAdd(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'UserDeposit') {
+            body = beginCell().store(storeUserDeposit(message)).endCell();
         }
-        if (message === 'increment') {
+        if (message === 'useAI') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
@@ -482,9 +488,10 @@ export class SampleTactContract implements Contract {
         
     }
     
-    async getCounter(provider: ContractProvider) {
+    async getGetUserBalance(provider: ContractProvider, userAddress: Address) {
         let builder = new TupleBuilder();
-        let source = (await provider.get('counter', builder.build())).stack;
+        builder.writeAddress(userAddress);
+        let source = (await provider.get('getUserBalance', builder.build())).stack;
         let result = source.readBigNumber();
         return result;
     }

@@ -28,6 +28,10 @@ forall X -> X __tact_not_null(X x) inline {
     throw_if(128, null?(x)); return x;
 }
 
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
 (int, slice, int, slice) __tact_context_get() inline {
     return __tact_context;
 }
@@ -40,8 +44,22 @@ builder __tact_store_bool(builder b, int v) inline {
     return b.store_int(v, 1);
 }
 
-int __tact_slice_eq_bits(slice a, slice b) inline {
-    return equal_slice_bits(a, b);
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
 }
 
 forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
@@ -89,8 +107,8 @@ forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
     send_raw_message($c, $params'mode);
 }
 
-((slice, int), ()) $SampleTactContract$_fun_forward((slice, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
-    var (($self'owner, $self'counter)) = $self;
+((cell, slice), ()) $AIChargeContract$_fun_forward((cell, slice) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
+    var (($self'userBalances, $self'owner)) = $self;
     var ($init) = $init;
     cell $code = null();
     cell $data = null();
@@ -106,21 +124,21 @@ forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
         if (($balanceBeforeMessage < 0)) {
             raw_reserve(0, 0);
             $global_send($SendParameters$_constructor_bounce_to_value_mode_body_code_data($bounce, $to, 0, (128 + 2), $body, $code, $data));
-            return (($self'owner, $self'counter), ());
+            return (($self'userBalances, $self'owner), ());
         }
     }
     $global_send($SendParameters$_constructor_bounce_to_value_mode_body_code_data($bounce, $to, 0, (64 + 2), $body, $code, $data));
-    return (($self'owner, $self'counter), ());
+    return (($self'userBalances, $self'owner), ());
 }
 
-((slice, int), ()) $SampleTactContract$_fun_reply((slice, int) $self, cell $body) impure inline {
-    var (($self'owner, $self'counter)) = $self;
-    ($self'owner, $self'counter)~$SampleTactContract$_fun_forward(__tact_context_get_sender(), $body, true, null());
-    return (($self'owner, $self'counter), ());
+((cell, slice), ()) $AIChargeContract$_fun_reply((cell, slice) $self, cell $body) impure inline {
+    var (($self'userBalances, $self'owner)) = $self;
+    ($self'userBalances, $self'owner)~$AIChargeContract$_fun_forward(__tact_context_get_sender(), $body, true, null());
+    return (($self'userBalances, $self'owner), ());
 }
 
-((slice, int), ()) $SampleTactContract$_fun_notify((slice, int) $self, cell $body) impure inline {
-    var (($self'owner, $self'counter)) = $self;
-    ($self'owner, $self'counter)~$SampleTactContract$_fun_forward(__tact_context_get_sender(), $body, false, null());
-    return (($self'owner, $self'counter), ());
+((cell, slice), ()) $AIChargeContract$_fun_notify((cell, slice) $self, cell $body) impure inline {
+    var (($self'userBalances, $self'owner)) = $self;
+    ($self'userBalances, $self'owner)~$AIChargeContract$_fun_forward(__tact_context_get_sender(), $body, false, null());
+    return (($self'userBalances, $self'owner), ());
 }

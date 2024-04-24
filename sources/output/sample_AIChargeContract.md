@@ -1,6 +1,6 @@
 # TACT Compilation Report
-Contract: SampleTactContract
-BOC Size: 849 bytes
+Contract: AIChargeContract
+BOC Size: 1187 bytes
 
 # Types
 Total Types: 7
@@ -29,14 +29,15 @@ Signature: `DeployOk{queryId:uint64}`
 TLB: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
 Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
-## Add
-TLB: `add#87d43ac2 amount:uint32 = Add`
-Signature: `Add{amount:uint32}`
+## UserDeposit
+TLB: `user_deposit#c4ee23f2 userAddress:address amount:uint64 = UserDeposit`
+Signature: `UserDeposit{userAddress:address,amount:uint64}`
 
 # Get Methods
 Total Get Methods: 1
 
-## counter
+## getUserBalance
+Argument: userAddress
 
 # Error Codes
 2: Stack undeflow
@@ -63,4 +64,5 @@ Total Get Methods: 1
 135: Code of a contract was not found
 136: Invalid address
 137: Masterchain support is not enabled for this contract
-4429: Invalid sender
+54615: Insufficient balance
+58222: Deposit amount must be greater than zero

@@ -52,58 +52,59 @@ cell $DeployOk$_store_cell((int) v) inline {
 }
 
 ;;
-;; Type: Add
-;; Header: 0x87d43ac2
-;; TLB: add#87d43ac2 amount:uint32 = Add
+;; Type: UserDeposit
+;; Header: 0xc4ee23f2
+;; TLB: user_deposit#c4ee23f2 userAddress:address amount:uint64 = UserDeposit
 ;;
 
-(slice, ((int))) $Add$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 2278832834);
-    var v'amount = sc_0~load_uint(32);
-    return (sc_0, (v'amount));
+(slice, ((slice, int))) $UserDeposit$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3303941106);
+    var v'userAddress = sc_0~__tact_load_address();
+    var v'amount = sc_0~load_uint(64);
+    return (sc_0, (v'userAddress, v'amount));
 }
 
 ;;
-;; Type: SampleTactContract
+;; Type: AIChargeContract
 ;;
 
-builder $SampleTactContract$_store(builder build_0, (slice, int) v) inline {
-    var (v'owner, v'counter) = v;
+builder $AIChargeContract$_store(builder build_0, (cell, slice) v) inline {
+    var (v'userBalances, v'owner) = v;
+    build_0 = build_0.store_dict(v'userBalances);
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = build_0.store_uint(v'counter, 32);
     return build_0;
 }
 
-(slice, ((slice, int))) $SampleTactContract$_load(slice sc_0) inline {
+(slice, ((cell, slice))) $AIChargeContract$_load(slice sc_0) inline {
+    var v'userBalances = sc_0~load_dict();
     var v'owner = sc_0~__tact_load_address();
-    var v'counter = sc_0~load_uint(32);
-    return (sc_0, (v'owner, v'counter));
+    return (sc_0, (v'userBalances, v'owner));
 }
 
-(slice, ((slice))) $SampleTactContract$init$_load(slice sc_0) inline {
+(slice, ((slice))) $AIChargeContract$init$_load(slice sc_0) inline {
     var v'owner = sc_0~__tact_load_address();
     return (sc_0, (v'owner));
 }
 
-(slice, int) $SampleTactContract$_contract_load() impure inline_ref {
+(cell, slice) $AIChargeContract$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~$SampleTactContract$_load();
+        return $sc~$AIChargeContract$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice owner) = $sc~$SampleTactContract$init$_load();
+        (slice owner) = $sc~$AIChargeContract$init$_load();
         $sc.end_parse();
-        return $SampleTactContract$_contract_init(owner);
+        return $AIChargeContract$_contract_init(owner);
     }
 }
 
-() $SampleTactContract$_contract_store((slice, int) v) impure inline {
+() $AIChargeContract$_contract_store((cell, slice) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = $SampleTactContract$_store(b, v);
+    b = $AIChargeContract$_store(b, v);
     set_data(b.end_cell());
 }

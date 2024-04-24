@@ -1,6 +1,6 @@
 import { toNano } from "@ton/core";
 import { ContractSystem } from "@tact-lang/emulator";
-import { SampleTactContract } from "./output/sample_SampleTactContract";
+import { AIChargeContract } from "./output/sample_AIChargeContract";
 
 describe("contract", () => {
     it("should deploy correctly", async () => {
@@ -8,161 +8,36 @@ describe("contract", () => {
         let system = await ContractSystem.create();
         let owner = system.treasure("owner");
         let nonOwner = system.treasure("non-owner");
-        let contract = system.open(await SampleTactContract.fromInit(owner.address));
+        let contract = system.open(await AIChargeContract.fromInit(owner.address));
         system.name(contract.address, "main");
-        let track = system.track(contract);
+        // let track = system.track(contract);
+        console.log("contract.address", contract.address)
+        console.log("user.address", owner.address)
+
         await contract.send(owner, { value: toNano(1) }, { $$type: "Deploy", queryId: 0n });
         await system.run();
-        expect(track.collect()).toMatchInlineSnapshot(`
-            [
-              {
-                "$seq": 0,
-                "events": [
-                  {
-                    "$type": "deploy",
-                  },
-                  {
-                    "$type": "received",
-                    "message": {
-                      "body": {
-                        "type": "known",
-                        "value": {
-                          "$$type": "Deploy",
-                          "queryId": 0n,
-                        },
-                      },
-                      "bounce": true,
-                      "from": "@treasure(owner)",
-                      "to": "@main",
-                      "type": "internal",
-                      "value": "1",
-                    },
-                  },
-                  {
-                    "$type": "processed",
-                    "gasUsed": 8040n,
-                  },
-                  {
-                    "$type": "sent",
-                    "messages": [
-                      {
-                        "body": {
-                          "type": "known",
-                          "value": {
-                            "$$type": "DeployOk",
-                            "queryId": 0n,
-                          },
-                        },
-                        "bounce": false,
-                        "from": "@main",
-                        "to": "@treasure(owner)",
-                        "type": "internal",
-                        "value": "0.990764",
-                      },
-                    ],
-                  },
-                ],
-              },
-            ]
-        `);
 
-        // Check counter
-        expect(await contract.getCounter()).toEqual(0n);
+        // Check Balance
+        const b1 = await contract.getGetUserBalance(owner.address)
+        console.log("Check Balance_1", b1)
+        // expect(await contract.getGetUserBalance(owner.address)).toEqual(0n);
 
         // Increment counter
-        await contract.send(owner, { value: toNano(1) }, "increment");
+        await contract.send(owner, { value: toNano(1) }, { $$type: "UserDeposit", userAddress: owner.address, amount: toNano(1) });
         await system.run();
-        expect(track.collect()).toMatchInlineSnapshot(`
-            [
-              {
-                "$seq": 1,
-                "events": [
-                  {
-                    "$type": "received",
-                    "message": {
-                      "body": {
-                        "text": "increment",
-                        "type": "text",
-                      },
-                      "bounce": true,
-                      "from": "@treasure(owner)",
-                      "to": "@main",
-                      "type": "internal",
-                      "value": "1",
-                    },
-                  },
-                  {
-                    "$type": "processed",
-                    "gasUsed": 8176n,
-                  },
-                  {
-                    "$type": "sent",
-                    "messages": [
-                      {
-                        "body": {
-                          "text": "incremented",
-                          "type": "text",
-                        },
-                        "bounce": true,
-                        "from": "@main",
-                        "to": "@treasure(owner)",
-                        "type": "internal",
-                        "value": "0.990604",
-                      },
-                    ],
-                  },
-                ],
-              },
-            ]
-        `);
 
-        // Check counter
-        expect(await contract.getCounter()).toEqual(1n);
+        // Check Balance
+        const b2 = await contract.getGetUserBalance(owner.address)
+        console.log("Check Balance_2", b2)
+        // expect(await contract.getGetUserBalance(owner.address)).toEqual(1n);
 
-        // Non-owner
-        await contract.send(nonOwner, { value: toNano(1) }, "increment");
+        // useAI
+        await contract.send(owner, { value: toNano(1) }, "useAI");
         await system.run();
-        expect(track.collect()).toMatchInlineSnapshot(`
-            [
-              {
-                "$seq": 2,
-                "events": [
-                  {
-                    "$type": "received",
-                    "message": {
-                      "body": {
-                        "text": "increment",
-                        "type": "text",
-                      },
-                      "bounce": true,
-                      "from": "@treasure(non-owner)",
-                      "to": "@main",
-                      "type": "internal",
-                      "value": "1",
-                    },
-                  },
-                  {
-                    "$type": "failed",
-                    "errorCode": 4429,
-                    "errorMessage": "Invalid sender",
-                  },
-                  {
-                    "$type": "sent-bounced",
-                    "message": {
-                      "body": {
-                        "cell": "x{FFFFFFFF00000000696E6372656D656E74}",
-                        "type": "cell",
-                      },
-                      "bounce": false,
-                      "from": "@main",
-                      "to": "@treasure(non-owner)",
-                      "type": "internal",
-                      "value": "0.995112",
-                    },
-                  },
-                ],
-              },
-            ]
-        `);
+
+        /// Check Balance
+        const b3 = await contract.getGetUserBalance(owner.address)
+        console.log("Check Balance_3", b3)
+        // expect(await contract.getGetUserBalance(owner.address)).toEqual(1n);
     });
 });

@@ -1,0 +1,168 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "sample_AIChargeContract.headers.fc";
+#include "sample_AIChargeContract.stdlib.fc";
+#include "sample_AIChargeContract.constants.fc";
+#include "sample_AIChargeContract.storage.fc";
+
+;;
+;; Contract AIChargeContract functions
+;;
+
+(cell, slice) $AIChargeContract$_contract_init(slice $owner) impure inline_ref {
+    var (($self'userBalances, $self'owner)) = (null(), null());
+    $self'owner = $owner;
+    $self'userBalances = null();
+    return ($self'userBalances, $self'owner);
+}
+
+((cell, slice), ()) $AIChargeContract$_fun_useAI((cell, slice) $self, slice $userAddress) impure inline_ref {
+    var (($self'userBalances, $self'owner)) = $self;
+    int $amount = __tact_dict_get_slice_int($self'userBalances, 267, $userAddress, 257);
+    throw_unless(54615, (~ null?($amount)));
+    int $amount2 = __tact_not_null(__tact_dict_get_slice_int($self'userBalances, 267, $userAddress, 257));
+    throw_unless(54615, ($amount2 >= 10000000));
+    $self'userBalances~__tact_dict_set_slice_int(267, $userAddress, ($amount2 - 10000000), 257);
+    return (($self'userBalances, $self'owner), ());
+}
+
+((cell, slice), int) $AIChargeContract$_fun_getUserBalance((cell, slice) $self, slice $userAddress) impure inline_ref {
+    var (($self'userBalances, $self'owner)) = $self;
+    int $amount = __tact_dict_get_slice_int($self'userBalances, 267, $userAddress, 257);
+    if (null?($amount)) {
+        return (($self'userBalances, $self'owner), 0);
+    } else {
+        return (($self'userBalances, $self'owner), __tact_not_null(__tact_dict_get_slice_int($self'userBalances, 267, $userAddress, 257)));
+    }
+}
+
+;;
+;; Receivers of a Contract AIChargeContract
+;;
+
+(((cell, slice)), ()) $AIChargeContract$_internal_binary_UserDeposit((cell, slice) $self, (slice, int) $msg) impure inline {
+    var ($self'userBalances, $self'owner) = $self;
+    var ($msg'userAddress, $msg'amount) = $msg;
+    throw_unless(58222, ($msg'amount > 0));
+    int $amount = __tact_dict_get_slice_int($self'userBalances, 267, $msg'userAddress, 257);
+    if ((~ null?($amount))) {
+        int $amountInt = __tact_not_null(__tact_dict_get_slice_int($self'userBalances, 267, $msg'userAddress, 257));
+        $self'userBalances~__tact_dict_set_slice_int(267, $msg'userAddress, ($amountInt + $msg'amount), 257);
+    } else {
+        $self'userBalances~__tact_dict_set_slice_int(267, $msg'userAddress, $msg'amount, 257);
+    }
+    return (($self'userBalances, $self'owner), ());
+}
+
+((cell, slice), ()) $AIChargeContract$_internal_text_8ba0c6c8085abe94d3a8e15b87ac69667ba741e1fabed5a01b6ac3007aedc06f((cell, slice) $self) impure inline {
+    var ($self'userBalances, $self'owner) = $self;
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    ($self'userBalances, $self'owner)~$AIChargeContract$_fun_useAI($ctx'sender);
+    ($self'userBalances, $self'owner)~$AIChargeContract$_fun_reply(__gen_cell_comment_8ba0c6c8085abe94d3a8e15b87ac69667ba741e1fabed5a01b6ac3007aedc06f());
+    return (($self'userBalances, $self'owner), ());
+}
+
+(((cell, slice)), ()) $AIChargeContract$_internal_binary_Deploy((cell, slice) $self, (int) $deploy) impure inline {
+    var ($self'userBalances, $self'owner) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'userBalances, $self'owner)~$AIChargeContract$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'userBalances, $self'owner), ());
+}
+
+;;
+;; Get methods of a Contract AIChargeContract
+;;
+
+_ %getUserBalance(slice $$userAddress) method_id(116409) {
+    slice $userAddress = __tact_verify_address($$userAddress);
+    var self = $AIChargeContract$_contract_load();
+    var res = self~$AIChargeContract$_fun_getUserBalance($userAddress);
+    return res;
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() method_id {
+    return "ipfs://QmXfg3JzoMYgCAjftmfYdVTi81VNi7xD6BwXLnhoZpNCmm";
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract AIChargeContract
+;;
+
+((cell, slice), int) $AIChargeContract$_contract_router_internal((cell, slice) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive UserDeposit message
+    if (op == 3303941106) {
+        var msg = in_msg~$UserDeposit$_load();
+        self~$AIChargeContract$_internal_binary_UserDeposit(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$AIChargeContract$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "useAI" message
+        if (text_op == 0x8ba0c6c8085abe94d3a8e15b87ac69667ba741e1fabed5a01b6ac3007aedc06f) {
+            self~$AIChargeContract$_internal_text_8ba0c6c8085abe94d3a8e15b87ac69667ba741e1fabed5a01b6ac3007aedc06f();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $AIChargeContract$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$AIChargeContract$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $AIChargeContract$_contract_store(self);
+}
